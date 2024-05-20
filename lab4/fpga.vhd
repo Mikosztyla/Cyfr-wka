@@ -24,11 +24,15 @@ architecture snake of fpga is
 	signal delay : natural := slow_delay;
 	signal clock_counter : natural range 0 to 20 := 0;
 	
+	signal spd_input_history : std_logic_vector(7 downto 0) := (others => '0');
+    signal rvs_input_history : std_logic_vector(7 downto 0) := (others => '0');
+
 	begin
 	
 	CHANGE_SPEED : process(spd_input)
 	begin
-		if spd_input ='1' then
+		spd_input_history <= spd_input_history(6 downto 0) & spd_input;
+		if spd_input_history = "11111111" then
 			if speed_state = '1' then
 				speed_state <= '0';
 				delay <= slow_delay;
@@ -41,7 +45,8 @@ architecture snake of fpga is
 	
 	CHANGE_DIRECTION : process(rvs_input)
 	begin
-		if rvs_input = '1' then
+		rvs_input_history <= rvs_input_history(6 downto 0) & rvs_input;
+		if rvs_input_history = "11111111" then
 			if reverse_state = '0' then
 				reverse_state <= '1';
 			else
