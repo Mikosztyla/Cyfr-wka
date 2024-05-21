@@ -4,31 +4,31 @@ use ieee.numeric_std.all;
 
 entity fpga is
 	port (
-		clk_input : in std_logic;
+		clk : in std_logic;
 		spd_input : in std_logic;
 		rvs_input : in std_logic;
-		left_out : out std_logic_vector(6 downto 0);
-		right_out : out std_logic_vector(6 downto 0)
+		left_out : out std_logic_vector(7 downto 0);
+		right_out : out std_logic_vector(7 downto 0)
 	);
 end fpga;
 
 
 architecture snake of fpga is
-	signal state : unsigned(2 downto 0) := "000";
+	signal state : unsigned(2 downto 0) := b"000";
 	
 	signal reverse_state: std_logic := '0';
 	signal speed_state: std_logic := '0';
 
-	constant fast_delay : natural := 10;
-	constant slow_delay : natural := 2 * fast_delay;
-	signal delay : natural := slow_delay;
-	signal clock_counter : natural range 0 to 20 := 0;
+	constant fast_delay : integer := 10_000_000;
+	constant slow_delay : integer := 3 * fast_delay;
+	signal delay : integer := slow_delay;
+	signal clock_counter : integer range 0 to 40_000_000;
 	
 	begin
 	
-	CHANGE_SPEED : process(spd_input)
+	SPEED : process(spd_input)
 	begin
-		if spd_input ='1' then
+		if (spd_input'event and spd_input ='1') then
 			if speed_state = '1' then
 				speed_state <= '0';
 				delay <= slow_delay;
@@ -37,23 +37,23 @@ architecture snake of fpga is
 				delay <= fast_delay;
 			end if;
 		end if;
-	end process CHANGE_SPEED;
+	end process SPEED;
 	
-	CHANGE_DIRECTION : process(rvs_input)
+	DIRECTION : process(rvs_input)
 	begin
-		if rvs_input = '1' then
+		if (rvs_input'event and rvs_input = '1') then
 			if reverse_state = '0' then
 				reverse_state <= '1';
 			else
 				reverse_state <= '0';
 			end if;
 		end if;
-	end process CHANGE_DIRECTION;
+	end process DIRECTION;
 
 	
-	MOVE: process(clk_input)
+	MOVE: process(clk)
 	begin
-		if rising_edge(clk_input) then
+		if clk = '1' then
 			clock_counter <= clock_counter + 1;
 			
 			if clock_counter >= delay then
@@ -73,32 +73,32 @@ architecture snake of fpga is
 	begin
 		case state is
 		when "000" => 
-			left_out <= "1110111";
-			right_out <= "1110111";
+			left_out <= b"11110111";
+			right_out <= b"11110111";
 		when "001" => 
-			left_out <= "1111111";
-			right_out <= "1110011";
+			left_out <= b"11111111";
+			right_out <= b"11110011";
 		when "010" => 
-			left_out <= "1111111";
-			right_out <= "1111001";
+			left_out <= b"11111111";
+			right_out <= b"11111001";
 		when "011" => 
-			left_out <= "1111111";
-			right_out <= "0111101";
+			left_out <= b"11111111";
+			right_out <= b"10111101";
 		when "100" => 
-			left_out <= "0111111";
-			right_out <= "0111111";
+			left_out <= b"10111111";
+			right_out <= b"10111111";
 		when "101" => 
-			left_out <= "0011111";
-			right_out <= "1111111";
+			left_out <= b"10011111";
+			right_out <= b"11111111";
 		when "110" => 
-			left_out <= "1001111";
-			right_out <= "1111111";
+			left_out <= b"11001111";
+			right_out <= b"11111111";
 		when "111" => 
-			left_out <= "1100111";
-			right_out <= "1111111";
+			left_out <= b"11100111";
+			right_out <= b"11111111";
 		when others =>
-			left_out <= "1111111";
-			right_out <= "1111111";
+			left_out <= b"11111111";
+			right_out <= b"11111111";
 		end case;
 		
 	end process DISPLAY;

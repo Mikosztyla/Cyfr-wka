@@ -5,21 +5,31 @@ Timing Analyzer Summary
 Type           : Worst-case tco
 Slack          : N/A
 Required Time  : None
-Actual Time    : 22.900 ns
-From           : state[1]
-To             : right_out[2]
-From Clock     : clk_input
+Actual Time    : 24.000 ns
+From           : state[2]
+To             : left_out[6]
+From Clock     : clk
 To Clock       : --
 Failed Paths   : 0
 
-Type           : Clock Setup: 'clk_input'
+Type           : Clock Setup: 'clk'
 Slack          : N/A
 Required Time  : None
-Actual Time    : 50.51 MHz ( period = 19.800 ns )
-From           : lpm_counter:clock_counter_rtl_0|alt_counter_f10ke:wysi_counter|counter_cell[1]
-To             : state[0]
-From Clock     : clk_input
-To Clock       : clk_input
+Actual Time    : 30.96 MHz ( period = 32.300 ns )
+From           : lpm_counter:clock_counter_rtl_0|alt_counter_f10ke:wysi_counter|counter_cell[7]
+To             : lpm_counter:clock_counter_rtl_0|alt_counter_f10ke:wysi_counter|counter_cell[25]
+From Clock     : clk
+To Clock       : clk
+Failed Paths   : 0
+
+Type           : Clock Setup: 'spd_input'
+Slack          : N/A
+Required Time  : None
+Actual Time    : Restricted to 125.00 MHz ( period = 8.000 ns )
+From           : delay[24]
+To             : delay[24]
+From Clock     : spd_input
+To Clock       : spd_input
 Failed Paths   : 0
 
 Type           : Clock Setup: 'rvs_input'
@@ -30,16 +40,6 @@ From           : reverse_state
 To             : reverse_state
 From Clock     : rvs_input
 To Clock       : rvs_input
-Failed Paths   : 0
-
-Type           : Clock Setup: 'spd_input'
-Slack          : N/A
-Required Time  : None
-Actual Time    : Restricted to 125.00 MHz ( period = 8.000 ns )
-From           : delay[4]
-To             : delay[4]
-From Clock     : spd_input
-To Clock       : spd_input
 Failed Paths   : 0
 
 Type           : Total number of failed paths
